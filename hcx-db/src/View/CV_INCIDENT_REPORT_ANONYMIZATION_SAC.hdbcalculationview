@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_INCIDENT_REPORT_ANONYMIZATION_SAC" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="CV_INCIDENT_REPORT_ANONYMIZATION_SAC.hdbcalculationview"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="V_INCIDENT_REPORT_ANONYMIZATION">
+    <resourceUri>V_INCIDENT_REPORT_ANONYMIZATION</resourceUri>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="SEQUENCE"/>
+      <viewAttribute id="SEX"/>
+      <viewAttribute id="AGE"/>
+      <viewAttribute id="OFFICE"/>
+      <viewAttribute id="DIVISION"/>
+      <viewAttribute id="INCIDENT_AMOUNT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="V_INCIDENT_REPORT_ANONYMIZATION"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="SEQUENCE" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SEQUENCE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SEQUENCE"/>
+    </attribute>
+    <attribute id="SEX" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SEX"/>
+      <keyMapping columnObjectName="Projection_1" columnName="SEX"/>
+    </attribute>
+    <attribute id="AGE" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="AGE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="AGE"/>
+    </attribute>
+    <attribute id="OFFICE" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="OFFICE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="OFFICE"/>
+    </attribute>
+    <attribute id="DIVISION" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="DIVISION"/>
+      <keyMapping columnObjectName="Projection_1" columnName="DIVISION"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="INCIDENT_AMOUNT" order="6" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="INCIDENT_AMOUNT"/>
+      <measureMapping columnObjectName="Projection_1" columnName="INCIDENT_AMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="100" y="195"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
