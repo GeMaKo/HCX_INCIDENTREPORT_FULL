@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CV_INCIDENT_REPORT_ANONYMIZATION_SAC" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:DataFoundation="http://www.sap.com/ndb/BiModelDataFoundation.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" id="CV_INCIDENT_REPORT_ANONYMIZATION_SAC" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
 <descriptions defaultDescription="CV_INCIDENT_REPORT_ANONYMIZATION_SAC.hdbcalculationview"/>
 <localVariables/>
 <variableMappings/>
 <dataSources>
   <DataSource id="V_INCIDENT_REPORT_ANONYMIZATION">
     <resourceUri>V_INCIDENT_REPORT_ANONYMIZATION</resourceUri>
+  </DataSource>
+  <DataSource id="T_GEOGRAPHIC_HIERARCHY2">
+    <resourceUri>T_GEOGRAPHIC_HIERARCHY2</resourceUri>
   </DataSource>
 </dataSources>
 <calculationViews>
@@ -21,50 +24,129 @@
     <calculatedViewAttributes/>
     <input node="V_INCIDENT_REPORT_ANONYMIZATION"/>
   </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="CN_1" joinType="rightOuter">
+    <viewAttributes>
+      <viewAttribute id="SEQUENCE" aggregationType="sum"/>
+      <viewAttribute id="SEX"/>
+      <viewAttribute id="AGE"/>
+      <viewAttribute id="OFFICE"/>
+      <viewAttribute id="DIVISION"/>
+      <viewAttribute id="INCIDENT_AMOUNT" aggregationType="sum"/>
+      <viewAttribute id="CONTINENT"/>
+      <viewAttribute id="WORLD"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="Projection_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="SEQUENCE" source="SEQUENCE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SEX" source="SEX"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AGE" source="AGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="OFFICE" source="OFFICE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="DIVISION" source="DIVISION"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="INCIDENT_AMOUNT" source="INCIDENT_AMOUNT"/>
+    </input>
+    <input node="T_GEOGRAPHIC_HIERARCHY2">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CONTINENT" source="CONTINENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="WORLD" source="WORLD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="OFFICE" source="COUNTRY"/>
+    </input>
+    <joinAttribute name="OFFICE"/>
+  </calculationView>
 </calculationViews>
-<logicalModel id="Projection_1">
+<logicalModel id="Join_1">
   <attributes>
     <attribute id="SEQUENCE" order="1" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SEQUENCE"/>
-      <keyMapping columnObjectName="Projection_1" columnName="SEQUENCE"/>
+      <keyMapping columnObjectName="Join_1" columnName="SEQUENCE"/>
     </attribute>
     <attribute id="SEX" order="2" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="SEX"/>
-      <keyMapping columnObjectName="Projection_1" columnName="SEX"/>
+      <keyMapping columnObjectName="Join_1" columnName="SEX"/>
     </attribute>
     <attribute id="AGE" order="3" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="AGE"/>
-      <keyMapping columnObjectName="Projection_1" columnName="AGE"/>
+      <keyMapping columnObjectName="Join_1" columnName="AGE"/>
     </attribute>
-    <attribute id="OFFICE" order="4" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="WORLD" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="WORLD"/>
+      <keyMapping columnObjectName="Join_1" columnName="WORLD"/>
+    </attribute>
+    <attribute id="CONTINENT" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CONTINENT"/>
+      <keyMapping columnObjectName="Join_1" columnName="CONTINENT"/>
+    </attribute>
+    <attribute id="OFFICE" order="6" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="OFFICE"/>
-      <keyMapping columnObjectName="Projection_1" columnName="OFFICE"/>
+      <keyMapping columnObjectName="Join_1" columnName="OFFICE"/>
     </attribute>
-    <attribute id="DIVISION" order="5" displayAttribute="false" attributeHierarchyActive="false">
+    <attribute id="DIVISION" order="7" displayAttribute="false" attributeHierarchyActive="false">
       <descriptions defaultDescription="DIVISION"/>
-      <keyMapping columnObjectName="Projection_1" columnName="DIVISION"/>
+      <keyMapping columnObjectName="Join_1" columnName="DIVISION"/>
     </attribute>
   </attributes>
   <calculatedAttributes/>
   <baseMeasures>
-    <measure id="INCIDENT_AMOUNT" order="6" aggregationType="sum" measureType="simple">
+    <measure id="INCIDENT_AMOUNT" order="8" aggregationType="sum" measureType="simple">
       <descriptions defaultDescription="INCIDENT_AMOUNT"/>
-      <measureMapping columnObjectName="Projection_1" columnName="INCIDENT_AMOUNT"/>
+      <measureMapping columnObjectName="Join_1" columnName="INCIDENT_AMOUNT"/>
     </measure>
   </baseMeasures>
   <calculatedMeasures/>
   <restrictedMeasures/>
-  <localDimensions/>
+  <localDimensions>
+    <localDimension id="GEOGRAPHIC_HIERARCHY">
+      <attributeRef xsi:type="DataFoundation:Attribute">WORLD</attributeRef>
+      <attributeRef xsi:type="DataFoundation:Attribute">CONTINENT</attributeRef>
+      <attributeRef xsi:type="DataFoundation:Attribute">OFFICE</attributeRef>
+      <hierarchies>
+        <hierarchy xsi:type="Dimension:LeveledHierarchy" id="GEOGRAPHIC_HIERARCHY" aggregateAllNodes="false" orphanedNodesHandling="ROOT_NODES" rootNodeVisibility="DO_NOT_ADD_ROOT_NODE" withRootNode="false" nodeStyle="NAME_PATH_ENFORCED" cacheEnabled="true" cycleHandling="BREAKUP" emptyValueIsNull="true">
+          <descriptions defaultDescription="GEOGRAPHIC_HIERARCHY"/>
+          <unassignedMemberProperties mode="FALSE"/>
+          <levels>
+            <level levelAttribute="WORLD" levelType="MDLEVEL_TYPE_REGULAR" order="1" orderAttribute="WORLD" sortDirection="ASC"/>
+            <level levelAttribute="CONTINENT" levelType="MDLEVEL_TYPE_REGULAR" order="2" orderAttribute="CONTINENT" sortDirection="ASC"/>
+            <level levelAttribute="OFFICE" levelType="MDLEVEL_TYPE_REGULAR" order="3" orderAttribute="OFFICE" sortDirection="ASC"/>
+          </levels>
+        </hierarchy>
+      </hierarchies>
+    </localDimension>
+    <localDimension id="DIVISION_HIERARCHY">
+      <attributeRef xsi:type="DataFoundation:Attribute">DIVISION</attributeRef>
+      <hierarchies>
+        <hierarchy xsi:type="Dimension:LeveledHierarchy" id="DIVISION_HIERARCHY" aggregateAllNodes="false" orphanedNodesHandling="ROOT_NODES" rootNodeVisibility="ADD_ROOT_NODE" withRootNode="true" nodeStyle="NAME_PATH_ENFORCED" cacheEnabled="true" cycleHandling="BREAKUP" emptyValueIsNull="true">
+          <descriptions defaultDescription="DIVISION_HIERARCHY"/>
+          <unassignedMemberProperties mode="FALSE"/>
+          <levels>
+            <level levelAttribute="DIVISION" levelType="MDLEVEL_TYPE_REGULAR" order="1" orderAttribute="DIVISION" sortDirection="ASC"/>
+          </levels>
+        </hierarchy>
+      </hierarchies>
+    </localDimension>
+  </localDimensions>
 </logicalModel>
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="40" y="85"/>
+      <upperLeftCorner x="92" y="112"/>
+    
+      <rectangleSize width="160"/>
     </shape>
   
     <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="100" y="195"/>
+      <upperLeftCorner x="92" y="352"/>
       <rectangleSize height="30" width="160"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92" y="217"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="Projection_1" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="191"/>
+    </shape>
+    <shape modelObjectName="T_GEOGRAPHIC_HIERARCHY2" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="920" y="30"/>
+      <rectangleSize width="244"/>
     </shape>
   </shapes>
 </layout>
