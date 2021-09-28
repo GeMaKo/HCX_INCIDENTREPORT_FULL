@@ -4,25 +4,14 @@
 <localVariables/>
 <variableMappings/>
 <dataSources>
+  <DataSource id="EMPLOYEE_SYN">
+    <resourceUri>EMPLOYEE_SYN</resourceUri>
+  </DataSource>
   <DataSource id="CV_INCIDENT_UNION_COMBINED">
     <resourceUri>CV_INCIDENT_UNION_COMBINED</resourceUri>
   </DataSource>
-  <DataSource id="EMPLOYEE">
-    <resourceUri>EMPLOYEE</resourceUri>
-  </DataSource>
 </dataSources>
 <calculationViews>
-  <calculationView xsi:type="Calculation:ProjectionView" id="INCIDENT">
-    <viewAttributes>
-      <viewAttribute id="EMPLOYEE_ID"/>
-    </viewAttributes>
-    <calculatedViewAttributes>
-      <calculatedViewAttribute id="CC_COUNTER" datatype="INTEGER" expressionLanguage="SQL">
-        <formula>1</formula>
-      </calculatedViewAttribute>
-    </calculatedViewAttributes>
-    <input node="CV_INCIDENT_UNION_COMBINED"/>
-  </calculationView>
   <calculationView xsi:type="Calculation:ProjectionView" id="EMPLOYEE_LIST">
     <viewAttributes>
       <viewAttribute id="SEQUENCE"/>
@@ -35,7 +24,18 @@
       <viewAttribute id="DIVISION"/>
     </viewAttributes>
     <calculatedViewAttributes/>
-    <input node="EMPLOYEE"/>
+    <input node="EMPLOYEE_SYN"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="INCIDENT">
+    <viewAttributes>
+      <viewAttribute id="EMPLOYEE_ID"/>
+    </viewAttributes>
+    <calculatedViewAttributes>
+      <calculatedViewAttribute id="CC_COUNTER" datatype="INTEGER" expressionLanguage="SQL">
+        <formula>1</formula>
+      </calculatedViewAttribute>
+    </calculatedViewAttributes>
+    <input node="CV_INCIDENT_UNION_COMBINED"/>
   </calculationView>
   <calculationView xsi:type="Calculation:AggregationView" id="INCIDENT_PER_EMPLOYEE">
     <viewAttributes>
@@ -46,7 +46,7 @@
     <restrictedViewAttributes/>
     <input node="INCIDENT"/>
   </calculationView>
-  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="C1_1" joinType="rightOuter">
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" cardinality="C1_1" joinType="leftOuter">
     <viewAttributes>
       <viewAttribute id="SEQUENCE" aggregationType="sum"/>
       <viewAttribute id="EMPLOYEE_ID"/>
@@ -57,17 +57,12 @@
       <viewAttribute id="OFFICE"/>
       <viewAttribute id="DIVISION"/>
       <viewAttribute id="CC_COUNTER" aggregationType="sum"/>
-      <viewAttribute hidden="true" id="JOIN$EMPLOYEE_ID$EMPLOYEE_ID"/>
     </viewAttributes>
     <calculatedViewAttributes>
       <calculatedViewAttribute id="CC_INCIDENT_AMOUNT" datatype="INTEGER" expressionLanguage="SQL">
         <formula>IFNULL(&quot;CC_COUNTER&quot;,0)</formula>
       </calculatedViewAttribute>
     </calculatedViewAttributes>
-    <input node="INCIDENT_PER_EMPLOYEE">
-      <mapping xsi:type="Calculation:AttributeMapping" target="CC_COUNTER" source="CC_COUNTER"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EMPLOYEE_ID$EMPLOYEE_ID" source="EMPLOYEE_ID"/>
-    </input>
     <input node="EMPLOYEE_LIST">
       <mapping xsi:type="Calculation:AttributeMapping" target="SEQUENCE" source="SEQUENCE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="EMPLOYEE_ID" source="EMPLOYEE_ID"/>
@@ -77,9 +72,12 @@
       <mapping xsi:type="Calculation:AttributeMapping" target="AGE" source="AGE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="OFFICE" source="OFFICE"/>
       <mapping xsi:type="Calculation:AttributeMapping" target="DIVISION" source="DIVISION"/>
-      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EMPLOYEE_ID$EMPLOYEE_ID" source="EMPLOYEE_ID"/>
     </input>
-    <joinAttribute name="JOIN$EMPLOYEE_ID$EMPLOYEE_ID"/>
+    <input node="INCIDENT_PER_EMPLOYEE">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CC_COUNTER" source="CC_COUNTER"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="EMPLOYEE_ID" source="EMPLOYEE_ID"/>
+    </input>
+    <joinAttribute name="EMPLOYEE_ID"/>
   </calculationView>
 </calculationViews>
 <logicalModel id="Join_1">
@@ -131,34 +129,34 @@
 <layout>
   <shapes>
     <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
-      <upperLeftCorner x="277" y="112"/>
+      <upperLeftCorner x="262.7804436579578" y="112"/>
     
       <rectangleSize width="160"/>
     </shape>
   
-    <shape expanded="true" modelObjectName="INCIDENT" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="91" y="461"/>
-      <rectangleSize height="30" width="235"/>
-    </shape>
     <shape expanded="true" modelObjectName="EMPLOYEE_LIST" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="377" y="356"/>
+      <upperLeftCorner x="358.00000000000006" y="356.9999988079071"/>
       <rectangleSize height="30" width="160"/>
     </shape>
+    <shape expanded="true" modelObjectName="INCIDENT" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="92.00000000000007" y="461.9999988079071"/>
+      <rectangleSize height="30" width="216.00000000000003"/>
+    </shape>
     <shape expanded="true" modelObjectName="INCIDENT_PER_EMPLOYEE" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="91" y="356"/>
-      <rectangleSize height="30" width="235"/>
+      <upperLeftCorner x="92.00000000000004" y="356.9999988079071"/>
+      <rectangleSize height="30" width="216.00000000000003"/>
     </shape>
     <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
-      <upperLeftCorner x="237" y="217"/>
-      <rectangleSize height="30" width="239"/>
-    </shape>
-    <shape modelObjectName="INCIDENT_PER_EMPLOYEE" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
-      <upperLeftCorner x="20" y="30"/>
-      <rectangleSize width="163"/>
+      <upperLeftCorner x="262.7804436579578" y="217"/>
+      <rectangleSize height="30" width="160"/>
     </shape>
     <shape modelObjectName="EMPLOYEE_LIST" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="163.63916015625"/>
+    </shape>
+    <shape modelObjectName="INCIDENT_PER_EMPLOYEE" modelObjectNameSpace="Join_1" modelObjectType="JoinNodeInput">
       <upperLeftCorner x="320" y="30"/>
-      <rectangleSize width="130"/>
+      <rectangleSize width="163.63916015625"/>
     </shape>
   </shapes>
 </layout>
